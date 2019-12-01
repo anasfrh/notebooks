@@ -1,0 +1,51 @@
+---
+title: "R Notebook"
+output:
+  html_notebook: 
+    fig_caption: yes
+    fig_width: 10
+    toc: yes
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# Patterns of Missing Data in the Financial Statements of GCC Banks
+
+
+We load the panel for Quarterly Financials from GCC based banks.
+
+```{r}
+load("join_panel.Rda")
+head(join_panel)
+```
+
+
+Let's see missing data patterns visually  
+    
+```{r}
+vis_miss(join_panel)
+
+```
+
+AS we see from the graph above the overall missing values percentage is around 13.6%. We cab see the pattern concentrate in specific variables 
+
+Let's look at the pattern of missing values between countries 
+```{r}
+join_panel %>% split(join_panel$COUNTRY) %>% map(~vis_miss(.))
+```
+
+From the country breakdown of financials we clearly see that the pattern of missing data is more accentuated in Bahrain and Kuwait. While Qatar, UAE and Saudi have less overall missing values, the missing values of key variables are still high and significant posing barier to research
+
+We know move on to look into patterns of missing data between islamic and conventional banks 
+
+```{r}
+join_panel %>% split(join_panel$IS_ISLAMIC) %>% map(~vis_miss(.))
+```
+
+Islamic banks have a slightly higher percentage of missing value as compared to conventional banks with around 2% more of missing values 
+
+
+
+
+

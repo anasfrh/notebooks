@@ -1,0 +1,84 @@
+---
+title: "Simulated Regression to Inspect Assumptions"
+output: html_notebook
+---
+
+The goal of this article is to present a brief overview of simple linear regression and its assumptions. We will be using simulated data to run properly sepcified regression, look how their diagnostic tests look like ie: assumptions are met. I then proceed to adjust the model such that one of the assumptions is no longer met and look at how that reflects on the diagnostics plots and overall regression result. 
+
+The general regression assumptions are subject to a lot of debate, for the purposes of this post, the regression assumptions we will be assuming and testing are the following: 
+
+* Linear relationship between Y and X 
+* Homoscedasticity of the error term 
+* Exogeneity of the error. Mean of the error term is zero
+
+
+
+In the example below we simulate a regression between two variables perfectly linear i.e no error component 
+
+```{r}
+set.seed(1994) #set seed for reproducible random number generation
+obs <- 5000 #number of observatoins to generate 
+x1 <- runif(obs, min=-20,max=20) #Randomly generate 5000 obs from a uniform distribution
+y1 <- 2*x1
+plot(x1,y1)
+model1 <- lm(y1~x1)
+summary(model1)
+plot(model1)
+```
+
+In the example below we simulate a regression between two variables with a noise component ie error
+
+```{r}
+set.seed(1994)
+obs <- 5000
+x2 <- runif(obs, min=-20,max=20)
+e1 <- rnorm(obs, mean=1,sd=10)
+y2 <- 2*x2 + e1
+plot(x2,y2)
+model2 <- lm(y2~x2)
+summary(model2)
+plot(model2)
+```
+
+
+In the example below we simulate a mispecified regression. We achieve this by using a log function, with a normally distributed error component 
+
+```{r}
+set.seed(1994) #set seed for reproducible random number generation
+obs <- 5000 #number of observatoins to generate 
+x3 <- runif(obs, min=1,max=20) #Randomly generate 5000 obs from a uniform distribution
+e1 <- rnorm(obs, mean=0,sd=0.2)
+y3 <- log(x3) + e1 #create a quadratic function from the the data variable 
+plot(x3,y3) #plot the graph of the relationship of Y with X
+model3 <- lm(y3~x3) #run a linear regression of the quadratic function Y on the varible X
+summary(model3) #Summary stats of previous regression model 
+plot(model3) #diagnostic plots for the regression 
+```
+
+In the example below, we simulate a regression with heteroskedasticity of the error term. 
+
+```{r}
+set.seed(1994)
+obs <- 5000
+x4 <- runif(obs, min=0,max=20)
+e1 <- rnorm(obs, mean=1,sd=sqrt(x4)) 
+y4 <- 2*x4 + e1
+plot(x4,y4)
+model4 <- lm(y4~x4)
+summary(model4)
+plot(model4)
+```
+
+
+
+
+
+References:
+https://stats.stackexchange.com/questions/258485/simulate-linear-regression-with-heteroscedasticity How to simulate heteroscedasdity of the error term in R  
+https://aosmith.rbind.io/2018/08/29/getting-started-simulating-data/ How to generate random data from various distributions  
+https://www.r-bloggers.com/simulating-endogeneity/ Simluating endogeneity 
+http://people.duke.edu/~rnau/testing.htm Regression assumptions 
+https://math.stackexchange.com/questions/1530571/linear-regression-model-assumptions Regression Assumptions 
+https://stats.stackexchange.com/questions/276831/assumptions-of-multiple-regression-how-is-normality-assumption-different-from-c/276888 Regression Asusmptions 
+
+

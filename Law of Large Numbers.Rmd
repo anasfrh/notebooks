@@ -22,7 +22,9 @@ Testing the Law of Large Numbers with a Cauchy distribution
 ```{r}
 n<-c(1:10000)
 y<-abs(rcauchy(10000))
+y1 <- rcauchy(10000)
 s<-cumsum(y)
+plot(y1)
 plot(s/n,xlab="n",
 ylim=c(0,20),type="l")
 
@@ -31,3 +33,4 @@ ylim=c(0,20),type="l")
 References: 
 https://www.math.arizona.edu/~jwatkins/J1_limit.pdf Simluating the Law of Large Numbers, Law of Large Numbers on a Cauchy Distribution 
 https://eranraviv.com/laws-of-large-numbers/ Simluating the Strong/Weak Law of Large Numbers in R
+https://eranraviv.com/central-moments/ 

@@ -1,7 +1,14 @@
 ---
 title: "Simulated Regression to Inspect Assumptions"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
+
+```{r}
+library(faraway)
+```
+
 
 The goal of this article is to present a brief overview of simple linear regression and its assumptions. We will be using simulated data to run properly sepcified regression, look how their diagnostic tests look like ie: assumptions are met. I then proceed to adjust the model such that one of the assumptions is no longer met and look at how that reflects on the diagnostics plots and overall regression result. 
 
@@ -13,20 +20,20 @@ The general regression assumptions are subject to a lot of debate, for the purpo
 
 
 
-In the example below we simulate a regression between two variables perfectly linear i.e no error component 
+**In the example below we simulate a regression between two variables perfectly linear i.e no error component** 
 
 ```{r}
 set.seed(1994) #set seed for reproducible random number generation
-obs <- 5000 #number of observatoins to generate 
+obs <- 100 #number of observatoins to generate 
 x1 <- runif(obs, min=-20,max=20) #Randomly generate 5000 obs from a uniform distribution
-y1 <- 2*x1
+y1 <- x1
 plot(x1,y1)
 model1 <- lm(y1~x1)
 summary(model1)
 plot(model1)
 ```
 
-In the example below we simulate a regression between two variables with a noise component ie error
+**In the example below we simulate a regression between two variables with a noise component ie error**
 
 ```{r}
 set.seed(1994)
@@ -41,7 +48,7 @@ plot(model2)
 ```
 
 
-In the example below we simulate a mispecified regression. We achieve this by using a log function, with a normally distributed error component 
+**In the example below we simulate a mispecified regression. We achieve this by using a log function, with a normally distributed error component** 
 
 ```{r}
 set.seed(1994) #set seed for reproducible random number generation
@@ -55,7 +62,7 @@ summary(model3) #Summary stats of previous regression model
 plot(model3) #diagnostic plots for the regression 
 ```
 
-In the example below, we simulate a regression with heteroskedasticity of the error term. 
+**In the example below, we simulate a regression with heteroskedasticity of the error term.** 
 
 ```{r}
 set.seed(1994)
@@ -71,14 +78,74 @@ plot(model4)
 
 
 
+The following example introduces collinearity between the variables x1 and x2 and x3. We simulated two variables x1 and x2 and we summed the two with a noise 
+component to get x3. 
+
+```{r}
+set.seed(1994)
+obs <- 1000
+x <- runif(obs, 10,100)
+
+x1 <- 2*x
+x2 <- 3*x + 3 + e
+x3 <- x1 + e1
+
+data <- data.frame(x1,x2,x3)
+
+e <- rnorm(obs,10,30)
+e1 <- rnorm(obs, 5, 45)
+
+y <- x1 + x2 + x3 + e  
+
+model1 <- lm(y ~ x1 + x2)
+summary(model1)
+vif(model1)
+plot(model1)
 
 
-References:
+model2 <- lm(y ~ x1 + x2 + x3)
+summary(model2)
+plot(model2)
+
+pairs(data)
+             
+  
+plot(x2,x1)
+```
+
+# Logistic Regression 
+
+```{r}
+set.seed(666)
+x1 = rnorm(1000)           # some continuous variables 
+x2 = rnorm(1000)
+z = 1 + 2*x1 + 3*x2        # linear combination with a bias
+pr = 1/(1+exp(-z))         # pass through an inv-logit function
+y = rbinom(1000,1,pr) 
+plot(z,y)
+summary(lm(y~x1+x2))
+```
+
+
+
+
+**References:**
+
 https://stats.stackexchange.com/questions/258485/simulate-linear-regression-with-heteroscedasticity How to simulate heteroscedasdity of the error term in R  
 https://aosmith.rbind.io/2018/08/29/getting-started-simulating-data/ How to generate random data from various distributions  
 https://www.r-bloggers.com/simulating-endogeneity/ Simluating endogeneity 
 http://people.duke.edu/~rnau/testing.htm Regression assumptions 
 https://math.stackexchange.com/questions/1530571/linear-regression-model-assumptions Regression Assumptions 
 https://stats.stackexchange.com/questions/276831/assumptions-of-multiple-regression-how-is-normality-assumption-different-from-c/276888 Regression Asusmptions 
+https://nwfsc-timeseries.github.io/atsa-labs/sec-tslab-random-walks-rw.html Simulating a Random Walk 
+https://daviddalpiaz.github.io/appliedstats/collinearity.html simulating multicolinearity in R 
+https://www.econometrics-with-r.org/6-4-ols-assumptions-in-multiple-regression.html simulating multicolinearity in R (imperfect multi colinearity)
+
+https://stats.stackexchange.com/questions/46523/how-to-simulate-artificial-data-for-logistic-regression/46525 Simulating logistic regression data
+
+https://daviddalpiaz.github.io/appliedstats/logistic-regression.html#binary-response
+
+https://stats.stackexchange.com/questions/321770/simulating-data-for-an-ordered-logit-model simulate ordinal logistic regression 
+
 
 

@@ -1,0 +1,70 @@
+---
+title: "Simulating dummy data in R"
+output: html_notebook
+---
+
+The goal of this article is to simulate sales data for a retail company, operating in a number of regions and cities with stores in each of those. 
+
+The simulation will rely on a couple of standard R functions mainly: rnorm(), sample(), rep()
+
+We will then explore our retail data  
+
+```{r}
+library(tidyverse)
+set.seed(2020)
+# we begin by creating vectors of our cities and store
+
+#We will generate a vector of random number between 2000 and 5000 that we will assign to our stores as IDs  
+stores <- seq(2000,5000) 
+
+cities <- c("Toronto","London","Guelph","Hamilton","Vancouver","Montreal","Ottawa","Quebec City","Victoria","Calgary")
+
+#We generate a vector of 1000 observations for our sales from a normal distribution with mean 12,5000 and standard deviation 2400. Later we will sample store sales data from this vector  
+sales <- rnorm(1000,12500,2400)
+
+#We want to simulate data for 52 weeks for 5 years corresponding to year i week j etc. for example Year 1 week 1 and then Year 1 week 2 etc...   
+weeks <- 52
+years <- 5
+
+week <- rep(1:weeks,years)
+year <- rep(1:years,each=weeks)
+
+#Let's merge our year and week vector to create our retailSales dataframe to store our year-week columns 
+retailSales <- data.frame(year, week)
+
+#Let's add the city and store data to our retailSales dataframe 
+
+city <- sample(cities,weeks*years, replace=TRUE)
+retailSales <- data.frame(retailSales, city)
+store <- c()
+retailSales <- retailSales[order(city),]
+for (i in retailSales$city) {
+  subset(retailSales, city == i)
+  store <- sample(stores, nrow(subset(retailSales, city == i)), replace=TRUE)
+  
+}
+
+
+```
+
+```{r}
+data %>%  
+  group_by(region_df) %>% 
+  summarise(totalSales = sum(sales_df),averageSales=mean(sales_df)) %>%
+  arrange(desc(totalSales)) %>% 
+  ggplot(aes(region_df,totalSales)) + geom_col()
+```
+
+```{r}
+data %>% arrange(region_df, store_df, year_df, weeks_df) %>% View() 
+```
+
+
+```{r}
+
+numbers <- data.frame(a=seq(2,20))
+
+
+
+```
+

@@ -1,0 +1,45 @@
+---
+title: "saving Rate"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+set.seed(2020) 
+
+Income <- 60000
+amy_saving_rate <- 0.3
+john_saving_rate <- 0.2
+amy_return <- 0.07
+john_return <- 0.09
+amy_risk <- 0.02
+john_risk <- 0.03
+years <- 30
+
+amy_30yr_returns <- rnorm(years,amy_return,amy_risk)
+john_30yr_returns <- rnorm(years,john_return,john_risk)
+
+amy_portfolio <- rep(0,30)
+john_portfolio  <- rep(0,30)
+
+portfolio <- data.frame(amy_portfolio,john_portfolio)
+
+for (i in 1:years) {
+  if (i==1) {
+    portfolio$amy_portfolio[i] <- Income*amy_saving_rate[i]
+    portfolio$john_portfolio[i] <- Income*john_saving_rate[i]
+  } else {
+    portfolio$amy_portfolio[i] <- (portfolio$amy_portfolio[i-1] + Income*amy_saving_rate)*(1+amy_30yr_returns[i])
+    portfolio$john_portfolio[i] <- (portfolio$john_portfolio[i-1] + Income*john_saving_rate)*(1+john_30yr_returns[i])
+  }
+  
+}
+
+year <- 1:years
+portfolio <- cbind(year,portfolio)
+portfolio %>% ggplot(aes(x=year)) + geom_line(aes(y=john_portfolio))+ geom_line(aes(y=amy_portfolio))
+
+```
+
+

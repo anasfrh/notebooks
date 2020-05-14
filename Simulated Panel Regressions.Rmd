@@ -1,0 +1,22 @@
+---
+title: "Simulating Panel Regressions"
+output: html_notebook
+---
+
+```{r}
+set.seed(1994)
+n <- 100
+obs <- rnorm(n,2,1)
+error <- rnorm(100,0,0.5)
+y <- rnorm(100)
+i <- n/10
+data <- data.frame()
+
+
+
+plot(obs,y)
+
+```
+
+
+
